@@ -1,0 +1,88 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextIndex"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  phone         String?
+  address       String?
+  bio           String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  properties    Property[]
+  savedProperties SavedProperty[]
+  messagesFrom  Message[] @relation("sender")
+  messagesTo    Message[] @relation("receiver")
+  
+  @@index([email])
+}
+
+model Property {
+  id            String    @id @default(cuid())
+  title         String
+  description   String    @db.LongText
+  price         Float
+  location      String
+  latitude      Float?
+  longitude     Float?
+  bedrooms      Int
+  bathrooms     Int
+  area          Float?
+  type          String    // APARTMENT, HOUSE, VILLA, etc.
+  status        String    @default("AVAILABLE") // AVAILABLE, SOLD, RENTED
+  images        String    @db.LongText // JSON array of image URLs
+  featured      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  userId        String
+  
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  savedBy       SavedProperty[]
+  messages      Message[]
+  
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+  @@fulltext([title, description])
+}
+
+model SavedProperty {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  userId        String
+  propertyId    String
+  
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property      Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, propertyId])
+  @@index([userId])
+}
+
+model Message {
+  id            String    @id @default(cuid())
+  content       String    @db.LongText
+  createdAt     DateTime  @default(now())
+  isRead        Boolean   @default(false)
+  senderId      String
+  receiverId    String
+  propertyId    String?
+  
+  sender        User      @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver      User      @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  property      Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([propertyId])
+}
