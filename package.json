@@ -12,6 +12,7 @@
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
+    "@netlify/plugin-nextjs": "^5.15.10",
     "@prisma/client": "^5.22.0",
     "antd": "^5.14.0",
     "axios": "^1.6.0",
