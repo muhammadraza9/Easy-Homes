@@ -1,7 +1,7 @@
 import { Card, Row, Col, Button, Divider, Tag } from 'antd';
 import { MailOutlined, UserOutlined, EnvironmentOutlined, PhoneOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
+import prisma from '@/lib/prisma';
 import { Property } from '@/types/property';
 import ContactForm from '@/app/components/ContactForm';
 import { sanitizePropertyImages } from '@/lib/utils/propertyImages';
