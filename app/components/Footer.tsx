@@ -6,44 +6,101 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-800 text-white mt-12">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
-            <h3 className="text-lg font-bold mb-4">🏠 Easy Homes</h3>
-            <p className="text-gray-400">Your trusted platform for buying, selling, and renting properties.</p>
-          </div>
+    <footer
+      style={{
+        background: '#111827',
+        color: '#fff',
+        marginTop: 50,
+        padding: '40px 20px',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: '0 auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: 30,
+        }}
+      >
 
-          <div>
-            <h4 className="font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li><Link href="/properties" className="hover:text-white transition">Browse Properties</Link></li>
-              <li><Link href="/about" className="hover:text-white transition">About Us</Link></li>
-              <li><Link href="/contact" className="hover:text-white transition">Contact</Link></li>
-            </ul>
-          </div>
+        {/* ABOUT */}
+        <div>
+          <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 10 }}>
+            🏠 Easy Homes
+          </h3>
+          <p style={{ color: '#9ca3af', lineHeight: 1.6 }}>
+            Your trusted platform for buying, selling, and renting properties.
+          </p>
+        </div>
 
-          <div>
-            <h4 className="font-semibold mb-4">For Users</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li><Link href="/auth/signin" className="hover:text-white transition">Sign In</Link></li>
-              <li><Link href="/properties/add" className="hover:text-white transition">Post Property</Link></li>
-              <li><Link href="/dashboard" className="hover:text-white transition">Dashboard</Link></li>
-            </ul>
-          </div>
+        {/* QUICK LINKS */}
+        <div>
+          <h4 style={{ fontWeight: 700, marginBottom: 10 }}>
+            Quick Links
+          </h4>
 
-          <div>
-            <h4 className="font-semibold mb-4">Legal</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li><Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition">Terms of Service</Link></li>
-            </ul>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Link href="/properties" style={{ color: '#9ca3af' }}>
+              Browse Properties
+            </Link>
+            <Link href="/about" style={{ color: '#9ca3af' }}>
+              About Us
+            </Link>
+            <Link href="/contact" style={{ color: '#9ca3af' }}>
+              Contact
+            </Link>
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; {currentYear} Easy Homes. All rights reserved.</p>
+        {/* USERS */}
+        <div>
+          <h4 style={{ fontWeight: 700, marginBottom: 10 }}>
+            For Users
+          </h4>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Link href="/auth/signin" style={{ color: '#9ca3af' }}>
+              Sign In
+            </Link>
+            <Link href="/properties/add" style={{ color: '#9ca3af' }}>
+              Post Property
+            </Link>
+            <Link href="/dashboard" style={{ color: '#9ca3af' }}>
+              Dashboard
+            </Link>
+          </div>
         </div>
+
+        {/* LEGAL */}
+        <div>
+          <h4 style={{ fontWeight: 700, marginBottom: 10 }}>
+            Legal
+          </h4>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Link href="/privacy" style={{ color: '#9ca3af' }}>
+              Privacy Policy
+            </Link>
+            <Link href="/terms" style={{ color: '#9ca3af' }}>
+              Terms of Service
+            </Link>
+          </div>
+        </div>
+
+      </div>
+
+      {/* BOTTOM */}
+      <div
+        style={{
+          borderTop: '1px solid #374151',
+          marginTop: 30,
+          paddingTop: 20,
+          textAlign: 'center',
+          color: '#9ca3af',
+        }}
+      >
+        © {currentYear} Easy Homes. All rights reserved.
       </div>
     </footer>
   );

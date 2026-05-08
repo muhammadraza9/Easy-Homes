@@ -1,102 +1,177 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button, Col, Input, message, Row, Skeleton, Typography } from 'antd';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import PropertyCard from '@/app/components/PropertyCard';
-import { Property } from '@/types/property';
+import Image from 'next/image';
 
-const { Title, Paragraph } = Typography;
+import { Row, Col, Card, Tag, Skeleton } from 'antd';
+import { EnvironmentOutlined } from '@ant-design/icons';
 
 export default function PropertiesPage() {
-  const router = useRouter();
-  const [properties, setProperties] = useState<Property[]>([]);
+  const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [sort, setSort] = useState('');
-
-  const fetchProperties = async (query: string, sortOrder = '') => {
-    setLoading(true);
-    try {
-      const url = `/api/properties?search=${encodeURIComponent(query)}&limit=10${sortOrder ? `&sort=${encodeURIComponent(sortOrder)}` : ''}`;
-      const response = await axios.get(url);
-      setProperties(response.data.data || []);
-    } catch (error) {
-      message.error('Failed to fetch properties');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const query = params.get('search') || '';
-    const sortOrder = params.get('sort') || '';
-    setSearch(query);
-    setSort(sortOrder);
-    fetchProperties(query, sortOrder);
+    const fetchAll = async () => {
+      try {
+        const res = await axios.get('/api/properties?limit=30');
+
+        if (Array.isArray(res.data)) {
+          setProperties(res.data);
+        } else if (Array.isArray(res.data.data)) {
+          setProperties(res.data.data);
+        } else {
+          setProperties([]);
+        }
+      } catch (err) {
+        console.log(err);
+        setProperties([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAll();
   }, []);
 
-  const handleSearch = () => {
-    const query = search || '';
-    const queryString = `/properties?search=${encodeURIComponent(query)}&limit=10${sort ? `&sort=${encodeURIComponent(sort)}` : ''}`;
-    router.push(queryString);
-    fetchProperties(query, sort);
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="mb-8 space-y-4">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <Title level={2}>Browse Properties</Title>
-              <Paragraph type="secondary">
-                View available homes, save your favorites, and connect with agents.
-              </Paragraph>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                onPressEnter={handleSearch}
-                placeholder="Search by location or property title"
-                className="min-w-65"
-                suffix={<SearchOutlined />}
-              />
-              <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
-                Search
-              </Button>
-              <Link href="/properties/add">
-                <Button icon={<PlusOutlined />}>Add Property</Button>
-              </Link>
-            </div>
-          </div>
+    <div style={{ padding: 40, background: '#f8fafc' }}>
+      <h1
+        style={{
+          fontSize: 34,
+          fontWeight: 800,
+          marginBottom: 20,
+        }}
+      >
+        All Properties
+      </h1>
 
-          {loading ? (
-            <Skeleton active paragraph={{ rows: 6 }} />
-          ) : properties.length === 0 ? (
-            <div className="rounded-lg bg-white p-10 text-center shadow-sm">
-              <Title level={4}>No properties found</Title>
-              <Paragraph type="secondary">Try another search or add a new property.</Paragraph>
-              <Link href="/properties/add">
-                <Button type="primary">Add Property</Button>
-              </Link>
-            </div>
-          ) : (
-            <Row gutter={[24, 24]}>
-              {properties.map((property) => (
-                <Col key={property.id} xs={24} sm={12} lg={8}>
-                  <PropertyCard property={property} />
+      <Row gutter={[24, 24]}>
+        {loading
+          ? Array.from({ length: 8 }).map((_, i) => (
+              <Col key={i} xs={24} sm={12} lg={6}>
+                <Card>
+                  <Skeleton active />
+                </Card>
+              </Col>
+            ))
+          : properties.map((property) => {
+              let images: string[] = [];
+
+              try {
+                images =
+                  typeof property.images === 'string'
+                    ? JSON.parse(property.images)
+                    : property.images || [];
+              } catch {
+                images = [];
+              }
+
+              const image =
+                images[0] ||
+                'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800';
+
+              return (
+                <Col key={property.id} xs={24} sm={12} lg={6}>
+                  <Link href={`/property/${property.id}`}>
+                    <Card
+                      hoverable
+                      style={{
+                        borderRadius: 14,
+                        overflow: 'hidden',
+                        height: '100%',
+                      }}
+                      styles={{ body: { padding: 0 } }}
+                    >
+                      {/* PROPERTY IMAGE */}
+                      <div
+                        style={{
+                          position: 'relative',
+                          height: 200,
+                        }}
+                      >
+                        <Image
+                          src={image}
+                          alt={property.title}
+                          fill
+                          style={{ objectFit: 'cover' }}
+                          unoptimized
+                        />
+
+                        {property.type && (
+                          <Tag
+                            color="green"
+                            style={{
+                              position: 'absolute',
+                              top: 10,
+                              left: 10,
+                              fontWeight: 700,
+                            }}
+                          >
+                            {property.type}
+                          </Tag>
+                        )}
+                      </div>
+
+                      {/* PROPERTY DETAILS */}
+                      <div style={{ padding: 14 }}>
+                        <h3
+                          style={{
+                            fontWeight: 700,
+                            fontSize: 18,
+                            marginBottom: 6,
+                          }}
+                        >
+                          {property.title}
+                        </h3>
+
+                        <p
+                          style={{
+                            color: '#6b7280',
+                            fontSize: 13,
+                            marginBottom: 10,
+                          }}
+                        >
+                          <EnvironmentOutlined /> {property.location}
+                        </p>
+
+                        {/* PROPERTY DESCRIPTION */}
+                        <p
+                          style={{
+                            color: '#4b5563',
+                            fontSize: 13,
+                            lineHeight: 1.6,
+                            marginBottom: 14,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          {property.description
+                            ? property.description
+                            : 'Beautiful property with modern architecture, spacious rooms, premium facilities, secure environment, and an excellent location perfect for comfortable family living.'}
+                        </p>
+
+                        {/* PROPERTY PRICE */}
+                        <p
+                          style={{
+                            color: '#059669',
+                            fontWeight: 800,
+                            fontSize: 18,
+                          }}
+                        >
+                          PKR{' '}
+                          {Number(property.price).toLocaleString('en-PK')}
+                        </p>
+                      </div>
+                    </Card>
+                  </Link>
                 </Col>
-              ))}
-            </Row>
-          )}
-        </div>
-      </div>
+              );
+            })}
+      </Row>
     </div>
   );
 }

@@ -2,39 +2,88 @@
 
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
-import { Button } from 'antd';
-import { LogoutOutlined, LoginOutlined, HomeOutlined } from '@ant-design/icons';
+import { Button, Space, Typography } from 'antd';
+import {
+  LogoutOutlined,
+  LoginOutlined,
+  HomeOutlined,
+} from '@ant-design/icons';
+
+const { Text } = Typography;
 
 export default function Header() {
   const { data: session, status } = useSession();
 
   const handleLogout = async () => {
-    await signOut({ redirect: true, callbackUrl: '/' });
+    await signOut({
+      redirect: true,
+      callbackUrl: '/',
+    });
   };
 
   return (
-    <header className="bg-emerald-700 text-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-bold hover:text-emerald-100 transition flex items-center gap-2">
-          <HomeOutlined className="text-xl" />
-          Easy Homes
-        </Link>
+    <header
+      style={{
+        background: '#059669',
+        color: '#fff',
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        boxShadow: '0 2px 10px rgba(0,0,0,0.15)',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: '0 auto',
+          padding: '16px 20px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
 
-        <nav className="flex gap-4 items-center">
-          <Link href="/properties" className="hover:text-emerald-100 transition">
+        {/* LOGO */}
+     <Link
+  href="/"
+  style={{
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: 800,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    textDecoration: 'none',
+  }}
+>
+  <HomeOutlined style={{ fontSize: 22, marginTop: 2 }} />
+  <span style={{ lineHeight: 1, position: 'relative', top: 1 }}>
+    Easy Homes
+  </span>
+</Link>
+
+        {/* NAV */}
+        <Space size="middle">
+
+          <Link href="/properties" style={{ color: '#fff' }}>
             Browse Properties
           </Link>
+
           {status === 'authenticated' && (
             <>
-              <Link href="/properties/add" className="hover:text-emerald-100 transition">
+              <Link href="/properties/add" style={{ color: '#fff' }}>
                 Post Property
               </Link>
-              <Link href="/dashboard" className="hover:text-emerald-100 transition">
+
+              <Link href="/dashboard" style={{ color: '#fff' }}>
                 Dashboard
               </Link>
-              <span className="text-sm">{session?.user?.name}</span>
+
+              <Text style={{ color: '#fff' }}>
+                {session?.user?.name}
+              </Text>
+
               <Button
-                type="primary"
                 danger
                 size="small"
                 icon={<LogoutOutlined />}
@@ -44,14 +93,17 @@ export default function Header() {
               </Button>
             </>
           )}
+
           {status === 'unauthenticated' && (
             <Link href="/auth/signin">
-              <Button type="primary" icon={<LoginOutlined />}>
+              <Button icon={<LoginOutlined />}>
                 Sign In
               </Button>
             </Link>
           )}
-        </nav>
+
+        </Space>
+
       </div>
     </header>
   );
