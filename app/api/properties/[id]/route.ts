@@ -1,15 +1,24 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const limit = searchParams.get('limit');
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
 
-  const properties = await prisma.property.findMany({
-    orderBy: { createdAt: 'desc' },
-    take: limit ? Number(limit) : undefined,
+  if (!id) {
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+  }
+
+  const property = await prisma.property.findUnique({
+    where: { id },
     include: { user: true },
   });
 
-  return NextResponse.json(properties);
+  if (!property) {
+    return NextResponse.json({ error: 'Property not found' }, { status: 404 });
+  }
+
+  return NextResponse.json(property);
 }
