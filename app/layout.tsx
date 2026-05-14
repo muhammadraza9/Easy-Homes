@@ -7,30 +7,27 @@ export const metadata: Metadata = {
   title: 'Easy Homes',
   description: 'Real Estate App',
   icons: {
-    icon: [
-      { url: '/easyhomes.png', type: 'image/png' },
-    ],
-    apple: '/easyhomes.png',
-    shortcut: '/easyhomes.png',
+    icon: '/easy-homes.png',
+    shortcut: '/easy-homes.png',
+    apple: '/easy-homes.png',
   },
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/easyhomes.png" type="image/png" />
-      </head>
       <body style={{ margin: 0, background: '#f3f4f6' }}>
         <Providers>
           <Header />
+          
           <main style={{ minHeight: '80vh' }}>
             {children}
           </main>
+
           <Footer />
         </Providers>
       </body>
