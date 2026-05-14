@@ -2,6 +2,9 @@ import { type NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import prisma from '@/lib/prisma';
 
+
+console.log("NEXTAUTH_URL =", process.env.NEXTAUTH_URL);
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
