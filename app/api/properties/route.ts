@@ -12,6 +12,7 @@ const normalizeImages = (images: unknown): string => {
   }
   return JSON.stringify([]);
 };
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: 'Failed to fetch properties' }, { status: 500 });
+    return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
 
