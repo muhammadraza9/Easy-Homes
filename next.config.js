@@ -22,3 +22,4 @@ const nextConfig = {
   },
 };
 module.exports = nextConfig;
+// force rebuild 2026-05-14 16:04:43
